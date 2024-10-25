@@ -52,14 +52,18 @@
                     <thead>
                         <tr>
                             <th>Product</th>
+                            <th>Product Name</th>
                             <th>Price</th>
+
                         </tr>
                     </thead>
                     <tbody>
                         {% for item in cart_items %}
                         <tr>
                             <td>{{ item.product }}</td>
+                            <td>{{ item.product_name }}</td>
                             <td>{{ item.price }}</td>
+
                         </tr>
                         {% endfor %}
                     </tbody>

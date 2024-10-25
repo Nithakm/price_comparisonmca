@@ -143,33 +143,44 @@ def login_or_register():
 # Route for index page
 @app.route('/index', methods=['GET', 'POST'])
 def home():
+    # Redirect to login if the user is not authenticated
     if 'user_email' not in session:
         return redirect(url_for('login_or_register'))
 
-    if request.method == 'POST':
-        product_name = request.form['product_name']
-        model_id = request.form['model_id']
+    product_name = None  # Initialize product_name for GET requests
 
+    if request.method == 'POST':
+        product_name = request.form.get('product_name')
+        model_id = request.form.get('model_id')
+
+        # Generate links based on product_name and model_id
         product_links = generate_links(product_name, model_id)
         flipkart_link, amazon_link, croma_link = product_links
 
+        # Scrape prices from the generated links
         flipkart_price = scrape_flipkart(flipkart_link)
         amazon_price = scrape_amazon(amazon_link)
         croma_price = scrape_croma(croma_link)
 
+        # Compare prices to find the best deal
         best_price, best_deal = compare_prices(flipkart_price, amazon_price, croma_price)
 
-        return render_template('index.html',
-                               flipkart_price=flipkart_price,
-                               amazon_price=amazon_price,
-                               croma_price=croma_price,
-                               best_price=best_price,
-                               best_deal=best_deal,
-                               flipkart_link=flipkart_link,
-                               amazon_link=amazon_link,
-                               croma_link=croma_link)
+        # Render with all scraped and calculated information for POST request
+        return render_template(
+            'index.html',
+            product_name=product_name,
+            flipkart_price=flipkart_price,
+            amazon_price=amazon_price,
+            croma_price=croma_price,
+            best_price=best_price,
+            best_deal=best_deal,
+            flipkart_link=flipkart_link,
+            amazon_link=amazon_link,
+            croma_link=croma_link
+        )
 
-    return render_template('index.html')
+    # Render template for GET request
+    return render_template('index.html', product_name=product_name)
 
 
 
@@ -182,6 +193,8 @@ def add_to_cart():
 
     product = request.form.get('product')
     price = request.form.get('price')
+    product_name = request.form.get('product_name')
+
 
     if not product or not price:
         return render_template('error.html', error="Missing product or price"), 400  # Render error page if product/price is missing
@@ -189,7 +202,8 @@ def add_to_cart():
     # Prepare product data
     product_data = {
         "product": product,
-        "price": price
+        "price": price,
+        "product_name":product_name
     }
 
     # Reference to the user's cart in Firestore
