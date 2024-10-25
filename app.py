@@ -248,7 +248,7 @@ def cart():
     return render_template('cart.html', cart_items=cart_items, total_price=total_price)
 
 
-# Password reset function
+# Logic for Password reset function
 def send_password_reset_email(email):
     try:
         link = auth.generate_password_reset_link(email)
