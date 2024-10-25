@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            background: linear-gradient(135deg, #6dd5fa, #ffffff);
+            background-size: 600% 600%;
+            animation: gradientBG 16s infinite;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        @keyframes gradientBG {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .form-container {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s ease;
+        }
+
+        .form-container img {
+            max-width: 200px;
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .form-label {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        .btn-primary {
+            background-color: #2980b9;
+            border: none;
+            padding: 10px 20px;
+            color: white;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: #2471a3;
+        }
+
+        p {
+            margin-top: 20px;
+            color: #333;
+        }
+
+        a {
+            color: #2980b9;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        a:hover {
+            color: #1a5276;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <img src="C:\Users\nitha\OneDrive\Desktop\mini project\logoB.png" alt="Logo">
+        <h2>Register</h2>
+        <form method="post" action="/register">
+            <label for="email" class="form-label">Email:</label>
+            <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" required>
+
+            <label for="password" class="form-label">Password:</label>
+            <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password" required>
+
+            <label for="confirm_password" class="form-label">Confirm Password:</label>
+            <input type="password" class="form-control" id="confirm_password" name="confirm_password" placeholder="Confirm your password" required>
+
+            <button type="submit" class="btn-primary">Register</button>
+        </form>
+        <p>Already have an account? <a href="/login">Login here</a></p>
+    </div>
+</body>
+</html>

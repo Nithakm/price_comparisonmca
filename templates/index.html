@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BargainBuddy</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        .btn-primary {
+            display: block;
+            margin: 10px auto; 
+            width: 120px; 
+            background-color: #4CAF50; 
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            font-size: 16px;
+            transition-duration: 0.4s;
+            cursor: pointer;
+        }
+        .btn-primary:hover {
+            background-color: #45a049; 
+            color: white;
+        }
+
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+            margin-bottom: 20px;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        body {
+            background-image: linear-gradient(to right, #accbee 0%, #e7f0fd 100%);
+            color: #333; 
+            font-family: Arial, sans-serif;
+        }
+        .logo {
+            display: block;
+            margin: 0 auto; 
+            width: 250px; 
+        }
+
+        .icons {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 9999;
+        }
+
+        .icons a {
+            color: #333;
+            font-size: 24px;
+            margin-left: 10px;
+            position: relative;
+        }
+
+        .icons a span {
+            display: none; 
+            position: absolute;
+            top: 40px; 
+            right: -20px; 
+            background-color: #fff;
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px; 
+            z-index: 999; 
+        }
+
+        .icons a:hover span {
+            display: block; 
+        }
+
+        .cart-popup {
+            position: absolute;
+            top: 50px;
+            right: 10px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            display: none;
+            z-index: 9999;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img src="{{ url_for('static', filename='logoS.png') }}" alt="BargainBuddy Logo" class="logo">
+        <form method="post">
+            <div class="form-group">
+                <input type="text" class="form-control" id="product_name" name="product_name" placeholder="Enter Product Name" required>
+            </div>
+            <div class="form-group">
+                <input type="text" class="form-control" id="model_id" name="model_id" placeholder="Enter Product Model ID" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Search</button>
+        </form>
+
+        <div class="row mt-5">
+            <div class="col-md-4">
+                <div class="card" id="flipkart-card">
+                    <div class="card-body">
+                        <h5 class="card-title">Flipkart</h5>
+                        <p class="price">{{ flipkart_price }}</p>
+                        <a href="{{ flipkart_link }}" class="btn btn-primary btn-sm" target="_blank">Buy Now</a>
+                        <form method="post" action="{{ url_for('add_to_cart') }}">
+                            <input type="hidden" name="product" value="Flipkart"> 
+                            <input type="hidden" name="price" value="{{ flipkart_price }}">
+                            <button type="submit" class="btn btn-primary btn-sm">Add to Cart</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card" id="amazon-card">
+                    <div class="card-body">
+                        <h5 class="card-title">Amazon</h5>
+                        <p class="price">{{ amazon_price }}</p>
+                        <a href="{{ amazon_link }}" class="btn btn-primary btn-sm" target="_blank">Buy Now</a>
+                        <form method="post" action="{{ url_for('add_to_cart') }}">
+                            <input type="hidden" name="product" value="Amazon">
+                            <input type="hidden" name="price" value="{{ amazon_price }}">
+                            <button type="submit" class="btn btn-primary btn-sm">Add to Cart</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card" id="croma-card">
+                    <div class="card-body">
+                        <h5 class="card-title">Croma</h5>
+                        <p class="price">{{ croma_price }}</p>
+                        <a href="{{ croma_link }}" class="btn btn-primary btn-sm" target="_blank">Buy Now</a>
+                        <form method="post" action="{{ url_for('add_to_cart') }}">
+                            <input type="hidden" name="product" value="Croma">
+                            <input type="hidden" name="price" value="{{ croma_price }}">
+                            <button type="submit" class="btn btn-primary btn-sm">Add to Cart</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Best Deal Card -->
+        <div class="row mt-5">
+            <div class="col-md-4 offset-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Best Deal</h5>
+                        <p class="price">{{ best_deal }}</p>
+                        <p class="price">{{ best_price }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- User and Cart Icons -->
+    <div class="icons">
+        <a href="#" id="user-icon"><i class="fas fa-user"></i><span>{{ session['user_email'] }}</span></a>
+        <a href="{{ url_for('cart') }}" class="cart-icon" data-cart-count="{{ session['cart_items']|length }}">
+            <i class="fas fa-shopping-cart"></i>
+        </a>
+    </div>
+
+    <!-- Bootstrap and jQuery scripts -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+    <script>
+        $(document).ready(function(){
+            $('.card').addClass('show');
+
+            // Cart Icon click event
+            $(".cart-icon").click(function(e){
+                e.preventDefault();
+                window.location.href = "/cart";
+            });
+
+            // User Icon click event
+            $("#user-icon").click(function(e){
+                e.preventDefault();
+                var logout = confirm("Are you sure you want to logout?");
+                if (logout) {
+                    window.location.href = "/logout"; 
+                }
+            });
+        });
+    </script>
+</body>
+</html>
