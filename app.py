@@ -260,7 +260,33 @@ def cart():
         total_price = sum(float(item['price'].replace('₹', '').replace(',', '').strip()) for item in cart_items)
 
     return render_template('cart.html', cart_items=cart_items, total_price=total_price)
+    
+@app.route('/remove_from_cart', methods=['POST'])
+def remove_from_cart():
+    user_id = session.get('user_id')
+    if not user_id:
+        return redirect(url_for('login_or_register'))
 
+    product_name = request.form.get('product_name')
+    product = request.form.get('product')
+
+    # Reference to the user's cart in Firestore
+    cart_ref = db.collection('carts').document(user_id)
+    cart_doc = cart_ref.get()
+
+    if cart_doc.exists:
+        cart_items = cart_doc.to_dict().get('items', [])
+        
+        # Filter out the item to be removed, checking if 'product' and 'product_name' are present
+        updated_cart_items = [
+            item for item in cart_items
+            if not (item.get('product') == product and item.get('product_name') == product_name)
+        ]
+        
+        # Update Firestore with the new list
+        cart_ref.update({"items": updated_cart_items})
+
+    return redirect(url_for('cart'))
 
 # Logic for Password reset function
 def send_password_reset_email(email):

@@ -12,34 +12,30 @@
             padding: 20px;
             background-color: #f4f4f4;
         }
-        h1 {
+        h2 {
             text-align: center;
             color: #333;
         }
-        .cart-item {
-            border: 1px solid #ccc;
-            padding: 10px;
-            margin: 10px 0;
-            border-radius: 5px;
-            background-color: #fff;
+        .table td, .table th {
+            vertical-align: middle;
         }
-        .subtotal {
+        .cart-total {
             font-weight: bold;
             font-size: 1.2em;
-        }
-        .button {
-            display: block;
-            width: 150px;
-            margin: 20px auto;
+            text-align: right;
             padding: 10px;
-            background-color: #4CAF50;
-            color: white;
-            text-align: center;
-            text-decoration: none;
-            border-radius: 5px;
         }
-        .button:hover {
-            background-color: #45a049;
+        .btn-remove {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-size: 14px;
+            border-radius: 4px;
+        }
+        .btn-remove:hover {
+            background-color: #c82333;
         }
     </style>
 </head>
@@ -54,7 +50,7 @@
                             <th>Product</th>
                             <th>Product Name</th>
                             <th>Price</th>
-
+                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -63,7 +59,13 @@
                             <td>{{ item.product }}</td>
                             <td>{{ item.product_name }}</td>
                             <td>{{ item.price }}</td>
-
+                            <td>
+                                <form method="post" action="{{ url_for('remove_from_cart') }}">
+                                    <input type="hidden" name="product" value="{{ item.product }}">
+                                    <input type="hidden" name="product_name" value="{{ item.product_name }}">
+                                    <button type="submit" class="btn-remove">Remove</button>
+                                </form>
+                            </td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -72,7 +74,7 @@
                     Total: ₹{{ total_price }}
                 </div>
                 <a href="{{ url_for('home') }}" class="btn btn-primary mt-3">Continue Shopping</a>
-                <a href="#" class="btn btn-success mt-3">Checkout</a> <!-- You can implement the checkout logic here -->
+                <a href="#" class="btn btn-success mt-3">Checkout</a>
             </div>
         </div>
     </div>
