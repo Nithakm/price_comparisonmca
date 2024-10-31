@@ -90,6 +90,19 @@
             display: none;
             z-index: 9999;
         }
+        .notification {
+            display: none; /* Hidden by default */
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            background-color: #28a745; /* Green background for success */
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+            font-size: 16px;
+            z-index: 1000; /* Overlay on top of other elements */
+        }
     </style>
 </head>
 <body>
@@ -199,5 +212,34 @@
             });
         });
     </script>
+    <!-- Notification element, initially hidden by CSS -->
+<div class="notification" id="notification"></div>
+
+<!-- Hidden div for passing messages from Flask to JavaScript -->
+<div id="flash-messages" style="display: none;">
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {{ messages[0] }}
+        {% endif %}
+    {% endwith %}
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Get the message content from the hidden flash-messages div
+        var message = document.getElementById('flash-messages').innerText.trim();
+        
+        if (message) { // Check if there's a message
+            var notification = document.getElementById('notification');
+            notification.innerText = message;  // Set message text in notification
+            notification.style.display = 'block'; // Show the notification
+
+            // Hide notification after 5 seconds
+            setTimeout(function() {
+                notification.style.display = 'none';
+            }, 5000);
+        }
+    });
+</script>
 </body>
 </html>

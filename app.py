@@ -68,7 +68,7 @@ def scrape_croma(url):
 # Function to compare prices
 def compare_prices(flipkart_price, amazon_price, croma_price):
     prices = {'Flipkart': flipkart_price.replace('₹', '').replace(',', ''),
-              'Amazon': amazon_price.replace(',', ''),
+              'Amazon': amazon_price.replace('₹', '').replace(',', ''),
               'Croma': croma_price.replace('₹', '').replace(',', '')}
     best_price = min(prices.values())
     best_deal = [merchant for merchant, price in prices.items() if price == best_price][0]
@@ -208,37 +208,15 @@ def add_to_cart():
 
     # Reference to the user's cart in Firestore
     cart_ref = db.collection('carts').document(user_id)
+    cart_doc = cart_ref.get()
+    if cart_doc.exists:
+        cart_ref.update({"items": firestore.ArrayUnion([product_data])})
+    else:
+        cart_ref.set({"items": [product_data]})
 
-    try:
-        # Check if cart already exists for this user
-        cart_doc = cart_ref.get()
-
-        if cart_doc.exists:
-            # If cart exists, update it by adding the new product
-            cart_ref.update({
-                "items": firestore.ArrayUnion([product_data])
-            })
-            flash(f"'{product}' has been added to your cart.", "success")  # Flash message for successful addition
-        else:
-            # If cart doesn't exist, create a new cart
-            cart_ref.set({
-                "items": [product_data]
-            })
-            flash(f"'{product}' has been added to your cart.", "success")  # Flash message for successful addition
-
-        # Redirect to the add_to_cart.html page after adding the item
-        return redirect(url_for('add_to_cart_page'))  # Redirect to the add_to_cart.html page
-
-    except Exception as e:
-        # Log the exception message
-        logging.error(f"An error occurred while adding to cart: {e}")  # Corrected logging call
-        return render_template('error.html', error="An error occurred while adding the product to the cart."), 500  # Corrected template to render
-
-# Route to display the add_to_cart.html page
-@app.route('/add_to_cart_page')
-def add_to_cart_page():
-    return render_template('add_to_cart.html')
-
+    # Flash notification message
+    flash("Item added to cart!")
+    return redirect(url_for('cart'))
 
 # Route to display the cart items
 @app.route('/cart')
